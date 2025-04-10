@@ -3,28 +3,17 @@ import axios from 'axios'
 import './App.css'
 
 function App() {
-  const [selectedOption, setSelectedOption] = useState('')
+  const [selectedCapacity, setCapacity] = useState('')
+  const [selectedContainer, setContainer] = useState('')
+  const [selectedAlgo, setAlgo] = useState('')
 
-  const handleChange = (e) => {
-    setSelectedOption(e.target.value)
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    if (!selectedOption) {
-      alert('Please select an option.')
-      return
-    }
-    // try {
-    //   const response = await axios.post('/your-endpoint', {
-    //     choice: selectedOption,
-    //   })
-    //   console.log('Response:', response.data)
-    // } catch (error) {
-    //   console.error('Error posting data:', error)
-    // }
-  }
+  const carryingCapacity = [100, 200, 500]
+  const containers = [100, 200, 500]
+  const algo = [
+    { label: 'HSA', value: 'hsa' },
+    { label: 'PSO', value: 'pso' },
+    { label: 'EPSO', value: 'epso' },
+  ]
 
   useEffect(() => {
     const getShips = async () => {
@@ -36,25 +25,27 @@ function App() {
       }
     }
     getShips()
-    // const getContainers = async () => {
-    //   try {
-    //     const response = await axios.get('/api/containers')
-    //     console.log(response.data)
-    //   } catch (error) {
-    //     console.error('Error fetching data:', error)
-    //   }
-    // }
-    // getContainers()
   }, [])
 
   const handleSolve = async () => {
+    if (!selectedAlgo || !selectedCapacity || !selectedContainer) {
+      alert('Please Complete')
+      return
+    }
+
+    console.log(selectedCapacity)
+    console.log(selectedContainer)
+    console.log(selectedAlgo)
+
+    const capacity = selectedCapacity
+    const length = selectedContainer
+    const algo = selectedAlgo
+
     try {
       const response = await axios.post('/api/', {
-        // weight: [1, 2, 3, 4, 5],
-        // value: [1, 2, 3, 4, 5],
-        length: 5,
-        capacity: 10,
-        algo: 'pso', // hsa, pso, e-pso
+        length: length,
+        capacity: capacity,
+        algo: algo, // hsa, pso, e-pso
       })
       console.log(response.data)
 
@@ -63,14 +54,6 @@ function App() {
       console.error('Error fetching data:', error)
     }
   }
-
-  const carryingCapacity = [100, 200, 500]
-  const containers = [100, 200, 500]
-  const algo = [
-    { label: 'hsa', value: 'hsa' },
-    { label: 'pso', value: 'pso' },
-    { label: 'epso', value: 'epso' },
-  ]
 
   return (
     <div className='m-5 p-0 flex flex-col gap-3'>
@@ -81,97 +64,53 @@ function App() {
 
       <fieldset className='flex gap-5'>
         <legend>Max Carrying Capacity</legend>
-        <div className='flex gap-1'>
-          <input type='radio' name='max_weight' id='100-weight' value='100' />
-          <label>100</label>
-        </div>
-        <div className='flex gap-1'>
-          <input type='radio' name='max_weight' id='200-weight' value='200' />
-          <label>200</label>
-        </div>
-        <div className='flex gap-1'>
-          <input type='radio' name='max_weight' id='500-weight' value='500' />
-          <label>500</label>
-        </div>
+        {carryingCapacity.map((capacity) => (
+          <div key={capacity} className='flex gap-1'>
+            <input
+              type='radio'
+              name='capacity'
+              id={`${capacity}-weight`}
+              value={capacity}
+              onChange={() => setCapacity(capacity)}
+            />
+            <label>{capacity}</label>
+          </div>
+        ))}
       </fieldset>
 
       <fieldset className='flex gap-5'>
         <legend>Containers</legend>
-        <div className='flex gap-1'>
-          <input
-            type='radio'
-            name='containers'
-            id='100-container'
-            value='100'
-          />
-          <label>100</label>
-        </div>
-        <div className='flex gap-1'>
-          <input
-            type='radio'
-            name='containers'
-            id='200-containers'
-            value='200'
-          />
-          <label>200</label>
-        </div>
-        <div className='flex gap-1'>
-          <input
-            type='radio'
-            name='containers'
-            id='500-containers'
-            value='500'
-          />
-          <label>500</label>
-        </div>
+        {containers.map((length) => (
+          <div key={length} className='flex gap-1'>
+            <input
+              type='radio'
+              name='containers'
+              id={`${length}-container`}
+              value={length}
+              onChange={() => setContainer(length)}
+            />
+            <label>{length}</label>
+          </div>
+        ))}
       </fieldset>
 
       <fieldset className='flex gap-5'>
         <legend>Algorithm</legend>
-        <div className='flex gap-1'>
-          <input type='radio' name='algo' id='pso' value='pso' />
-          <label>PSO</label>
-        </div>
-        <div className='flex gap-1'>
-          <input type='radio' name='algo' id='hsa' value='hsa' />
-          <label>HSA</label>
-        </div>
-        <div className='flex gap-1'>
-          <input type='radio' name='algo' id='epso' value='epso' />
-          <label>EPSO</label>
-        </div>
+        {algo.map(({ label, value }) => (
+          <div key={value} className='flex gap-1'>
+            <input
+              type='radio'
+              name='algo'
+              id={value}
+              value={value}
+              onChange={() => setAlgo(value)}
+            />
+            <label>{label}</label>
+          </div>
+        ))}
       </fieldset>
     </div>
   )
 }
 
 export default App
-
-{
-  /* <div>
-        <p>Problem Length</p>
-        <input type='number' name='' id='' className=' w-1/5 border-1' />
-      </div> */
-}
-{
-  /*<div className='flex gap-5'>
-        <div>
-          <p>Minimum Value</p>
-          <input type='number' name='' id='' className='border-1' />
-        </div>
-        <div>
-          <p>Maximum Value</p>
-          <input type='number' name='' id='' className='border-1' />
-        </div>
-      </div>
-      <div className='flex gap-5'>
-        <div>
-          <p>Minimum Weight</p>
-          <input type='number' name='' id='' className='border-1' />
-        </div>
-        <div>
-          <p>Maximum Weight</p>
-          <input type='number' name='' id='' className='border-1' />
-        </div>
-      </div> */
-}
