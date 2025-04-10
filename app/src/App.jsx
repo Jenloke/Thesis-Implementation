@@ -3,11 +3,12 @@ import axios from 'axios'
 import './App.css'
 
 function App() {
-  const [selectedCapacity, setCapacity] = useState('')
+  const [shipsCapacity, setShipsCapacity] = useState([])
+
+  const [selectedCapacity, setSelectedCapacity] = useState('')
   const [selectedContainer, setContainer] = useState('')
   const [selectedAlgo, setAlgo] = useState('')
 
-  const carryingCapacity = [100, 200, 500]
   const containers = [100, 200, 500]
   const algo = [
     { label: 'HSA', value: 'hsa' },
@@ -16,15 +17,16 @@ function App() {
   ]
 
   useEffect(() => {
-    const getShips = async () => {
+    const fetchData = async () => {
       try {
         const response = await axios.get('/api/ships')
         console.log(response.data)
+        setShipsCapacity(response.data)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
     }
-    getShips()
+    fetchData()
   }, [])
 
   const handleSolve = async () => {
@@ -32,11 +34,9 @@ function App() {
       alert('Please Complete')
       return
     }
-
     console.log(selectedCapacity)
     console.log(selectedContainer)
     console.log(selectedAlgo)
-
     const capacity = selectedCapacity
     const length = selectedContainer
     const algo = selectedAlgo
@@ -64,14 +64,14 @@ function App() {
 
       <fieldset className='flex gap-5'>
         <legend>Max Carrying Capacity</legend>
-        {carryingCapacity.map((capacity) => (
+        {shipsCapacity.map((capacity) => (
           <div key={capacity} className='flex gap-1'>
             <input
               type='radio'
               name='capacity'
               id={`${capacity}-weight`}
               value={capacity}
-              onChange={() => setCapacity(capacity)}
+              onChange={() => setSelectedCapacity(capacity)}
             />
             <label>{capacity}</label>
           </div>
