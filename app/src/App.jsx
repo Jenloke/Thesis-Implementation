@@ -83,6 +83,13 @@ function App() {
     // console.log(selectedCapacity, selectedContainer)
     const capacity = selectedCapacity
 
+    // Solutions
+    setSolution({})
+    setSolArray([])
+    setRuntime(0)
+    setfinalOpCost(0)
+    setProfit(0)
+
     try {
       const response = await axios.post('/api/', {
         capacity: capacity,
