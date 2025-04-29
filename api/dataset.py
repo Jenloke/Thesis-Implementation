@@ -9,7 +9,7 @@ def data_ships():
   # new_df_ships = df_ships.loc[(df_ships['Ship_Type'] == 'Container Ship') & (df_ships['Route_Type'] == 'Short-haul')]
   new_df_ships = df_ships.loc[(df_ships['Ship_Type'] == 'Container Ship')]
   
-  n = np.random.randint(1,2)
+  n = np.random.randint(2,5)
   ships = new_df_ships[['Ship_Type', 'Cargo_Weight_tons', 'Operational_Cost_USD']].sample(n=n)
   
   ships['Cargo_Weight_tons'] = ships['Cargo_Weight_tons'].astype(int)
@@ -22,7 +22,8 @@ def data_containers(length: int = 200):
   df_containers = pd.read_csv('dataset/ph_commodity_trade_statistics_data.csv')
   df_containers.dropna(inplace=True)
 
-  df_containers_sample = df_containers.sample(length, random_state=100, ignore_index=True)
+  # df_containers_sample = df_containers.sample(length, random_state=100, ignore_index=True)
+  df_containers_sample = df_containers.sample(length, ignore_index=True)
   df_containers_sample = df_containers_sample[['trade_usd', 'weight_kg']]
   
   df_containers_sample['weight_kg'] = df_containers_sample['weight_kg'].map(lambda x: convert(x)).astype(int)
